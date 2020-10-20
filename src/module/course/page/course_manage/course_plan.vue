@@ -16,7 +16,7 @@
         <el-form-item label="上级结点" >
           <el-select v-model="teachplanActive.parentid" placeholder="不填表示根结点">
             <el-option
-              v-for="item in teachplanList1"
+              v-for="item in teachplanList"
               :key="item.id"
               :label="item.pname"
               :value="item.id">
@@ -90,7 +90,6 @@
             }]
           }]
         }],
-        teachplanList1: [],
         defaultProps:{
           children: 'children',
           label: 'pname'
@@ -207,10 +206,6 @@
         courseApi.findTeachplanList(this.courseid).then(res=>{
             if(res && res.children){
               this.teachplanList = res.children;
-              id = res.children[0].id
-              courseApi.findTeachplanBytesPoint(id).then(res=>{
-                this.teachplanList1 = res
-              })
             }
         })
       }
