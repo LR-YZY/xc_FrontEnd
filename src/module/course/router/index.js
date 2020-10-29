@@ -19,6 +19,7 @@ export default [
     iconCls: 'el-icon-document',
     children: [
       { path: '/course/list', name: '我的课程',component: course_list,hidden: false },
+      { path: '/list', name: '主页课程',component: course_list,hidden: false },
       { path: '/course/add/base', name: '新增课程',component: course_add,hidden: true },
       { path: '/course/manager/:courseid', name: '管理课程',component: course_manage,hidden: true ,
         children: [

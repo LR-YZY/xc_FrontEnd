@@ -52,9 +52,43 @@
           <el-button type="primary" v-on:click="addTeachplan">提交</el-button>
           <el-button type="primary" v-on:click="resetForm">重置</el-button>
         </el-form-item>
-
       </el-form>
     </el-dialog>
+
+    <el-dialog title="修改课程计划" :visible.sync="UpdateteachplayFormVisible" >
+      <el-form ref="teachplanForm2"  :model="teachplanActive2" label-width="140px" style="width:600px;" :rules="teachplanRules" >
+    
+        <el-form-item label="章节/课时名称" prop="pname">
+          <el-input v-model="teachplanActive2.pname" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="课程类型" >
+          <el-radio-group v-model="teachplanActive2.ptype">
+            <el-radio class="radio" label='1'>视频</el-radio>
+            <el-radio class="radio" label='2'>文档</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="学习时长（分钟）  请输入数字" >
+          <el-input type="number" v-model="teachplanActive2.timelength" auto-complete="off" ></el-input>
+        </el-form-item>
+        <el-form-item label="排序字段" >
+          <el-input v-model="teachplanActive2.orderby" auto-complete="off" ></el-input>
+        </el-form-item>
+        <el-form-item label="章节/课时介绍" prop="description">
+          <el-input type="textarea" v-model="teachplanActive2.description" ></el-input>
+        </el-form-item>
+
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="teachplanActive2.status" >
+            <el-radio class="radio" label="0" >未发布</el-radio>
+            <el-radio class="radio" label='1'>已发布</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item  >
+          <el-button type="primary" v-on:click="UpdtaeTeachplan">提交</el-button>
+          <el-button type="primary" v-on:click="resetForm">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog> 
     <el-dialog title="选择媒资文件" :visible.sync="mediaFormVisible">
       <media-list v-bind:ischoose="true" @choosemedia="choosemedia"></media-list>
     </el-dialog>
@@ -75,6 +109,7 @@
       return {
         mediaFormVisible:false,
         teachplayFormVisible:false,//控制添加窗口是否显示
+        UpdateteachplayFormVisible: false,
         teachplanList : [{
           id: 1,
           pname: '一级 1',
@@ -103,6 +138,7 @@
           ]
         },
         teachplanActive:{},
+        teachplanActive2:{},
         teachplanId:''
       }
     },
@@ -158,6 +194,25 @@
             }
         })
       },
+      UpdtaeTeachplan(){
+         //校验表单
+        this.$refs.teachplanForm2.validate((valid) => {
+            if (valid) {
+           courseApi.UpdateTeachplan(this.teachplanActive2).then(res=>{
+                if(res.success){
+                    this.$message.success("修改成功")
+                    this.UpdateteachplayFormVisible = false
+                    this.teachplanActive2 = {}
+                    //刷新树
+                    this.findTeachplan()  
+                }else{
+                  this.$message.error(res.message)
+                }
+
+              })
+            }
+        })
+      },
   //重置表单
       resetForm(){
         this.teachplanActive = {}
@@ -172,7 +227,10 @@
 
       },
       edit(data){
-        //alert(data.id);
+        this.UpdateteachplayFormVisible = true;
+        courseApi.findTeachplanByid(data.id).then(res =>{
+            this.teachplanActive2 = res
+        })
       },
       remove(node, data) {
         //删除课程计划

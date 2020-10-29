@@ -42,6 +42,7 @@
   import * as courseApi from '../api/course';
   import utilApi from '../../../common/utils';
   import * as systemApi from '../../../base/api/system';
+  import * as userApi from '../api/user';
   export default {
 
     data() {
@@ -64,7 +65,12 @@
           mt:'',
           st:'',
           description: '',
-          userId: ''
+          userId: '',
+          companyId: ''
+        },
+        company: {
+          userid: '',
+          companyid: ''
         },
         courseRules: {
           name: [
@@ -88,24 +94,54 @@
       save () {
           //处理课程分类
           // 选择课程分类存储到categoryActive
+          //从sessionStorage中取出当前用户
+          //从sessionStorage中取出当前用户
+        let activeUser= utilApi.getActiveUser();
+        //取出cookie中的令牌
+        let uid = utilApi.getCookie("uid")
+        console.log(activeUser)
+        if(activeUser && uid && uid == activeUser.uid){
+            this.user = activeUser;
+            let activeUser1 = utilApi.getUserInfoFromJwt(activeUser.jwt);
+        }else{
+            if(!uid){
+                return ;
+            }
+            //请求查询jwt
+           systemApi.getjwtbyuid(uid).then((res)  => {
+                if(res.success){
+                    let jwt = res.jwt;
+                    let activeUser = utilApi.getUserInfoFromJwt(jwt)
+                    if(activeUser){
+                        this.user = activeUser;
+                        setUserSession("activeUser",JSON.stringify(activeUser))
+                    }
+                }
+            })
+        }
            this.courseForm.mt=  this.categoryActive[0]//大分类
            this.courseForm.st=  this.categoryActive[1]//小分类
-           this.courseForm.userId= 1
-          courseApi.addCourseBase(this.courseForm).then(res=>{
-              if(res.success){
-                  this.$message.success(res.message)
-                //跳转到我的课程
-                this.$router.push({ path: '/course/list'})
-              }else{
-                this.$message.error(res.message)
-              }
-
-          })
+           this.courseForm.userId= activeUser.userid     
+            var id = activeUser.userid;
+            //根据id查询教育机构
+            userApi.findcompanyByuserId(id).then((res) =>{
+                this.company = res
+                 this.courseForm.companyId = this.company.companyId;
+                 courseApi.addCourseBase(this.courseForm).then(res=>{
+                      if(res.success){
+                          this.$message.success(res.message)
+                        //跳转到我的课程
+                        this.$router.push({ path: '/course/list'})
+                      }else{
+                        this.$message.error(res.message)
+                      }
+                  })
+            })
       }
     },
     created(){
-
-    },
+         
+       },
     mounted(){
       // 查询课程分类
       courseApi.category_findlist().then(res=>{

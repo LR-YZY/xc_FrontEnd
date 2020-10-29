@@ -15,7 +15,7 @@ export default {
   //   let activeUserStr = this.getSession("activeUser");
   //   return JSON.parse(activeUserStr);
   // },
-  getActiveUser: function(){
+  getActiveUser : function(){
     let uid = this.getCookie("uid")
     if(uid){
       let activeUserStr = this.getUserSession("activeUser");
@@ -45,7 +45,7 @@ export default {
     activeUser.utype = jwtDecodeVal.utype || '';
     activeUser.username = jwtDecodeVal.name || '';
     activeUser.userpic = jwtDecodeVal.userpic || '';
-    activeUser.userid = jwtDecodeVal.userid || '';
+    activeUser.userid = jwtDecodeVal.id || '';
     activeUser.authorities = jwtDecodeVal.authorities || '';
     activeUser.uid = jwtDecodeVal.jti || '';
     activeUser.jwt = jwt;
@@ -67,7 +67,7 @@ export default {
         activeUser.utype = jwtDecodeVal.utype || '';
         activeUser.username = jwtDecodeVal.user_name || '';
         activeUser.userpic = jwtDecodeVal.userpic || '';
-        activeUser.userid = jwtDecodeVal.userid || '';
+        activeUser.userid = jwtDecodeVal.id || '';
         activeUser.authorities = jwtDecodeVal.authorities || '';
         activeUser.menus = jwtDecodeVal.menus || '';
 

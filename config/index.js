@@ -24,7 +24,7 @@ module.exports = {
       }*/
        '/api/ucenter': {
        // target: 'http://localhost:3000/mock/11'
-       target: 'http://127.0.0.1:31200',
+       target: 'http://127.0.0.1:40300',
          pathRewrite: {
            '^/api': ''
          }
@@ -48,6 +48,14 @@ module.exports = {
          }
        // target: 'http://127.0.0.1:50201/api'
        },
+       '/api/teacher': {
+        // target: 'http://localhost:3000/mock/11'
+          target: 'http://localhost:2324',
+          pathRewrite: { 
+            '^/api': ''
+          }
+        // target: 'http://127.0.0.1:50201/api'
+        },
        '/api/media': {//媒资管理
        target: 'http://127.0.0.1:31400',
          pathRewrite: {

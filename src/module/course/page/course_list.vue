@@ -42,6 +42,7 @@
 <script>
   import * as courseApi from '../api/course';
   import utilApi from '../../../common/utils';
+  import * as systemApi from '../../../base/api/system';
   let sysConfig = require('@/../config/sysConfig')
   export default {
     data() {
@@ -51,7 +52,12 @@
         total: 0,
         courses: [],
         sels: [],//列表选中列
-        imgUrl:sysConfig.imgUrl
+        imgUrl:sysConfig.imgUrl,
+        user:{
+                userid:'',
+                username: '',
+                userpic: ''
+        }
       }
     },
     methods: {
@@ -62,7 +68,31 @@
       },
       //获取课程列表
       getCourse() {
-        courseApi.findCourseList(this.page,this.size,{userId:1}).then((res) => {
+         //从sessionStorage中取出当前用户
+        let activeUser= utilApi.getActiveUser();
+        //取出cookie中的令牌
+        let uid = utilApi.getCookie("uid")
+        console.log(activeUser)
+        if(activeUser && uid && uid == activeUser.uid){
+            this.user = activeUser;
+            let activeUser1 = utilApi.getUserInfoFromJwt(activeUser.jwt);
+        }else{
+            if(!uid){
+                return ;
+            }
+            //请求查询jwt
+           systemApi.getjwtbyuid(uid).then((res)  => {
+                if(res.success){
+                    let jwt = res.jwt;
+                    let activeUser = utilApi.getUserInfoFromJwt(jwt)
+                    if(activeUser){
+                        this.user = activeUser;
+                        setUserSession("activeUser",JSON.stringify(activeUser))
+                    }
+                }
+            })
+        }
+        courseApi.findCourseList(this.page,this.size,{userId:activeUser.userid}).then((res) => {
             this.total = res.total;
             this.courses = res.list;
         });

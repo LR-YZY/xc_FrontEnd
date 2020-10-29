@@ -53,8 +53,15 @@ export const deleteTeachplan = (data) => {
   return http.requestPost(apiUrl+'/course/teachplan/deleteteachplan',data)
 }
 
-
-//保存课程图片地址到课程数据 库
+//根据id查询课程计划
+export const findTeachplanByid = id => {
+  return http.requestQuickGet(apiUrl+'/course/teachplan/TeachplanByid/'+id)
+}
+//修改课程计划
+export const UpdateTeachplan = teachplah => {
+  return http.requestPut(apiUrl+'/course/teachplan/update',teachplah)
+}
+//保存课程图片地址到课程数据库
 export const addCoursePic= (courseId,pic) => {
   return http.requestPost(apiUrl+'/course/coursepic/add?courseId='+courseId+"&pic="+pic)
 }
@@ -64,7 +71,7 @@ export const findCoursePicList = courseId => {
 }
 
 //删除课程图片
-export const deleteCoursePic= courseId => {
+export const deleteCoursePic= (courseId,file) => {
   return http.requestDelete(apiUrl+'/course/coursepic/delete?courseId='+courseId)
 }
 /*预览课程*/
@@ -84,3 +91,9 @@ export const findCourseView = courseId => {
 export const savemedia = teachplanMedia => {
   return http.requestPost(apiUrl+'/course/savemedia',teachplanMedia);
 }
+
+//跟老师有关的页面所有请求
+export const findTeacherByuserId = (userId) => {
+  return http.requestGet(apiUrl+'/course/teacherByuserId/'+userId)
+}
+

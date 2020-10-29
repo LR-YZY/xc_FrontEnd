@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <el-upload
       action="/api/filesystem/upload"
       list-type="picture-card"
@@ -76,7 +75,7 @@
         })*/
 
       },
-      //上传成功的钩子方法
+      //上传成功的钩子方法  
       handleSuccess(response, file, fileList){
         console.log(response)
 //        alert('上传成功')
@@ -148,5 +147,4 @@
   }
 </script>
 <style>
-
 </style>
